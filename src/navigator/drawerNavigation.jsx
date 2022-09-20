@@ -6,13 +6,17 @@ import { MyDiaryScreen } from '../screens/MyDiaryScreen';
 import { GalleryScreen } from '../screens/GalleryScreen';
 import { RecomendationScreen } from '../screens/RecomendationScreen';
 import { MeditationScreen } from '../screens/MeditationScreen';
+import { LoginScreen } from '../screens/LoginScreen';
+import { WelcomeUserScreen } from '../screens/WelcomeUserScreen';
 
-import Icon from 'react-native-vector-icons/Ionicons';
+
 import { TouchableOpacity, StyleSheet, View, Image, Text } from 'react-native';
 
 const Drawer = createDrawerNavigator();
 
-export const Navigation = () => {
+export const DrawerNavigation = () => {
+
+  const isLogin = false;
 
   return (
     <Drawer.Navigator 

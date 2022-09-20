@@ -5,7 +5,7 @@ export const GalleryWeek = ({data, firstImage}) => {
   const { imagesCollection, week } = data;
   const [ bigImage, setBigImage ] = useState();
 
-  // Controlamos la renovacion de la imagen grande si hay un cambio de galeriaad
+  // Controlamos la renovacion de la imagen grande si hay un cambio de galeria
   useEffect(() =>{
     setBigImage(firstImage)
   }, [data])

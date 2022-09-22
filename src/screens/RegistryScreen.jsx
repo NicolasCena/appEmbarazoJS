@@ -6,16 +6,39 @@ import { InputRegister } from '../components/inputRegister';
 
 export const RegistryScreen = () => {
 
+  const abc = ['a','b','c','d','e','f','g','h','i','j','k','l', 'ñ','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
+  const numbers = [1,2,3,4,5,6,7,8,9,0];
   const [ emailFlag, setEmailFlag ] = useState(false);
   const [ emailFlagData, setEmailFlagData ] = useState('');
 
-  const [ passwordlFlag, setPasswordlFlag ] = useState(false);
-  const [ captchalFlag, setCaptchalFlag ] = useState(false);
+  const [ passwordFlag, setPasswordFlag ] = useState('');
+  const [ flagObject, setFlagObject ] = useState({
+    mayuscula: false,
+    minuscula: false,
+    caracter: false,
+    longitud: false,
+    numero: false,
+    samePass: false,
+  })
 
-  const CheckEmail = (item) => {
-    console.log(item)
+  const CheckCondition = (pass) => {
+    flagObject.mayuscula = pass.match(/[A-Z]/) ? true : false;
+    flagObject.minuscula = pass.match(/[a-z]/) ? true : false;
+    flagObject.caracter = pass.match(/[!@#$%^&*]/) ? true : false;
+    flagObject.longitud = pass.length >= 8 ? true : false;
+    flagObject.numero = pass.match(/[0-9]/) ? true : false;
 
+  };
+
+  const Comparations = (pass) => {
+    console.log(pass)
+    flagObject.samePass = (pass == passwordFlag) ? true : false;
   }
+
+  useEffect(() => {}, [flagObject])
+
+  
+   
 
   return (
     <SafeAreaView style={{ marginTop: 100}}>
@@ -37,14 +60,16 @@ export const RegistryScreen = () => {
             keyboardType='email-address'/>}
         />
         
-        <InputRegister campoTexto="Contraseña" tipoDeInput={<TextInput style={ styles.input } />}/>
+        <InputRegister campoTexto="Contraseña" tipoDeInput={<TextInput style={ styles.input } onChangeText={(pass) => {CheckCondition(pass), setPasswordFlag(pass)}}/>}/>
 
-        <InputRegister campoTexto="Repetir Contraseña" tipoDeInput={<TextInput style={ styles.input } />}/>
+        <InputRegister campoTexto="Repetir Contraseña" tipoDeInput={<TextInput style={ styles.input } onChangeText={ (ete) => Comparations(ete)} />}/>
         
-        <TextValidationPassword Texto="hola" icono="information-circle-outline"/>
-        <TextValidationPassword Texto="hola" icono="information-circle-outline"/>
-        <TextValidationPassword Texto="hola" icono="information-circle-outline"/>
-        <TextValidationPassword Texto="hola" icono="information-circle-outline"/>
+        <TextValidationPassword Texto="Letra mayúscula" icono={flagObject.mayuscula ? 'checkmark-outline' : 'home'}/>
+        <TextValidationPassword Texto="Letra mínuscula" icono={flagObject.minuscula ? 'checkmark-outline' : 'home'}/>
+        <TextValidationPassword Texto="Simbolo" icono={flagObject.caracter? 'checkmark-outline' : 'home'}/>
+        <TextValidationPassword Texto="Número" icono={flagObject.longitud? 'checkmark-outline' : 'home'}/>
+        <TextValidationPassword Texto="Ocho carácteres" icono={flagObject.numero ? 'checkmark-outline' : 'home'}/>
+        <TextValidationPassword Texto="Coinciden" icono={flagObject.samePass ? 'checkmark-outline' : 'home'}/>
 
 
       </View>

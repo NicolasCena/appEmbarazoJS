@@ -21,24 +21,27 @@ export const RegistryScreen = () => {
     samePass: false,
   })
 
-  const CheckCondition = (pass) => {
-    flagObject.mayuscula = pass.match(/[A-Z]/) ? true : false;
-    flagObject.minuscula = pass.match(/[a-z]/) ? true : false;
-    flagObject.caracter = pass.match(/[!@#$%^&*]/) ? true : false;
-    flagObject.longitud = pass.length >= 8 ? true : false;
-    flagObject.numero = pass.match(/[0-9]/) ? true : false;
+  const CheckCondition = (pass, newpass) => {
+    flagObject.mayuscula = pass.match(/[A-Z]/)
+    flagObject.minuscula = pass.match(/[a-z]/)
+    flagObject.caracter = pass.match(/[!@#$%^&*]/)
+    flagObject.longitud = pass.length >= 8
+    flagObject.numero = pass.match(/[0-9]/)
+    console.log(pass.match(/[0-9]/))
 
+    if(newpass === passwordFlag){
+      setFlagObject({
+        ...flagObject,
+        samePass: true,
+      })
+    }else{
+      setFlagObject({
+        ...flagObject,
+        samePass: false,
+      })
+    }
   };
 
-  const Comparations = (pass) => {
-    console.log(pass)
-    flagObject.samePass = (pass == passwordFlag) ? true : false;
-  }
-
-  useEffect(() => {}, [flagObject])
-
-  
-   
 
   return (
     <SafeAreaView style={{ marginTop: 100}}>
@@ -62,7 +65,7 @@ export const RegistryScreen = () => {
         
         <InputRegister campoTexto="Contraseña" tipoDeInput={<TextInput style={ styles.input } onChangeText={(pass) => {CheckCondition(pass), setPasswordFlag(pass)}}/>}/>
 
-        <InputRegister campoTexto="Repetir Contraseña" tipoDeInput={<TextInput style={ styles.input } onChangeText={ (ete) => Comparations(ete)} />}/>
+        <InputRegister campoTexto="Repetir Contraseña" tipoDeInput={<TextInput style={{ ...styles.input, borderColor: flagObject.samePass ? 'green' : 'red' }} onChangeText={ (ete) => CheckCondition(passwordFlag, ete)} />}/>
         
         <TextValidationPassword Texto="Letra mayúscula" icono={flagObject.mayuscula ? 'checkmark-outline' : 'home'}/>
         <TextValidationPassword Texto="Letra mínuscula" icono={flagObject.minuscula ? 'checkmark-outline' : 'home'}/>
@@ -70,7 +73,6 @@ export const RegistryScreen = () => {
         <TextValidationPassword Texto="Número" icono={flagObject.longitud? 'checkmark-outline' : 'home'}/>
         <TextValidationPassword Texto="Ocho carácteres" icono={flagObject.numero ? 'checkmark-outline' : 'home'}/>
         <TextValidationPassword Texto="Coinciden" icono={flagObject.samePass ? 'checkmark-outline' : 'home'}/>
-
 
       </View>
     </SafeAreaView>

@@ -4,9 +4,11 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 export const TextValidationPassword = ({ Texto, icono}) => {
   return (
-    <View style={ style.validateContainer }>
-        <Icon name={icono} color='black' size={20} />
-        <Text>{Texto}</Text>
+    <View style={{ width: '50%'}}>
+      <View style={ style.validateContainer }>
+          <Icon name={icono ? 'checkmark-sharp' : 'close'} color={icono ? 'green' : 'red'} size={25} />
+          <Text>{Texto}</Text>
+      </View>
     </View>
   )
 }
@@ -14,7 +16,8 @@ export const TextValidationPassword = ({ Texto, icono}) => {
 const style = StyleSheet.create({
     validateContainer: {
         display: 'flex',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        alignItems: 'center'
     }
 })
 

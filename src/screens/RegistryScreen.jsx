@@ -6,43 +6,37 @@ import { InputRegister } from '../components/inputRegister';
 
 export const RegistryScreen = () => {
 
-  const abc = ['a','b','c','d','e','f','g','h','i','j','k','l', 'ñ','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
-  const numbers = [1,2,3,4,5,6,7,8,9,0];
   const [ emailFlag, setEmailFlag ] = useState(false);
   const [ emailFlagData, setEmailFlagData ] = useState('');
 
   const [ passwordFlag, setPasswordFlag ] = useState('');
+  const [ newPasswordFlag, setNewPasswordFlag ] = useState('');
   const [ flagObject, setFlagObject ] = useState({
-    mayuscula: false,
-    minuscula: false,
+    uppercase: false,
+    lowercase: false,
     caracter: false,
-    longitud: false,
-    numero: false,
+    length: false,
+    number: false,
     samePass: false,
   })
 
-  const CheckCondition = (pass, newpass) => {
-    flagObject.mayuscula = pass.match(/[A-Z]/)
-    flagObject.minuscula = pass.match(/[a-z]/)
-    flagObject.caracter = pass.match(/[!@#$%^&*]/)
-    flagObject.longitud = pass.length >= 8
-    flagObject.numero = pass.match(/[0-9]/)
-    console.log(pass.match(/[0-9]/))
-
-    if(newpass === passwordFlag){
-      setFlagObject({
-        ...flagObject,
-        samePass: true,
-      })
-    }else{
-      setFlagObject({
-        ...flagObject,
-        samePass: false,
-      })
-    }
+  const CheckCondition = () => {
+    flagObject.uppercase = (/[A-Z]/).test(passwordFlag);
+    flagObject.lowercase = (/[a-z]/).test(passwordFlag);
+    flagObject.caracter = (/[!@#$%^&*]/).test(passwordFlag); 
+    flagObject.length = (/^.{4,12}$/).test(passwordFlag);
+    flagObject.number = (/[0-9]/).test(passwordFlag);
+    (newPasswordFlag === passwordFlag) ? setFlagObject({...flagObject, samePass: true}) : setFlagObject({...flagObject, samePass: false});
   };
 
+  useEffect(() => {
 
+    // We reread the function when any state is updated
+    CheckCondition();
+
+  }, [newPasswordFlag, passwordFlag])
+  
+  
   return (
     <SafeAreaView style={{ marginTop: 100}}>
       <View style={{ margin: 20}}>
@@ -58,21 +52,23 @@ export const RegistryScreen = () => {
           campoTexto="Repetir Email" 
           tipoDeInput={<TextInput 
             style={ styles.input } 
-            onChangeText={(item) => CheckEmail(item)} 
+            onChangeText={(item) => CheckEmail(item)}
             autoComplete='off' 
             keyboardType='email-address'/>}
         />
         
-        <InputRegister campoTexto="Contraseña" tipoDeInput={<TextInput style={ styles.input } onChangeText={(pass) => {CheckCondition(pass), setPasswordFlag(pass)}}/>}/>
+        <InputRegister campoTexto="Contraseña" tipoDeInput={<TextInput style={ styles.input } onChangeText={(text) => {setPasswordFlag(text), CheckCondition()}}/>}/>
 
-        <InputRegister campoTexto="Repetir Contraseña" tipoDeInput={<TextInput style={{ ...styles.input, borderColor: flagObject.samePass ? 'green' : 'red' }} onChangeText={ (ete) => CheckCondition(passwordFlag, ete)} />}/>
+        <InputRegister campoTexto="Repetir Contraseña" tipoDeInput={<TextInput style={{ ...styles.input }} onChangeText={ (text) =>{setNewPasswordFlag(text)}} />}/>
         
-        <TextValidationPassword Texto="Letra mayúscula" icono={flagObject.mayuscula ? 'checkmark-outline' : 'home'}/>
-        <TextValidationPassword Texto="Letra mínuscula" icono={flagObject.minuscula ? 'checkmark-outline' : 'home'}/>
-        <TextValidationPassword Texto="Simbolo" icono={flagObject.caracter? 'checkmark-outline' : 'home'}/>
-        <TextValidationPassword Texto="Número" icono={flagObject.longitud? 'checkmark-outline' : 'home'}/>
-        <TextValidationPassword Texto="Ocho carácteres" icono={flagObject.numero ? 'checkmark-outline' : 'home'}/>
-        <TextValidationPassword Texto="Coinciden" icono={flagObject.samePass ? 'checkmark-outline' : 'home'}/>
+        <View style={ styles.containerInputs }>
+          <TextValidationPassword Texto="Letra mayúscula" icono={flagObject.uppercase}/>
+          <TextValidationPassword Texto="Letra mínuscula" icono={flagObject.lowercase}/>
+          <TextValidationPassword Texto="Simbolo" icono={flagObject.caracter}/>
+          <TextValidationPassword Texto="Número" icono={flagObject.length}/>
+          <TextValidationPassword Texto="Ocho carácteres" icono={flagObject.number}/>
+          <TextValidationPassword Texto="Coinciden" icono={flagObject.samePass}/>
+        </View>
 
       </View>
     </SafeAreaView>
@@ -90,4 +86,11 @@ const styles = StyleSheet.create({
     position: 'relative',
     color: 'black'
   },
+  containerInputs: {
+    width: '100%', 
+    height: 'auto', 
+    display: 'flex', 
+    flexWrap: 'wrap', 
+    flexDirection: 'row'
+  }
 })

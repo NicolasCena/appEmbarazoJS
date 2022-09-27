@@ -1,81 +1,81 @@
-import React, { useState,  useEffect } from 'react';
-import { View, Text, SafeAreaView, TextInput, StyleSheet } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, SafeAreaView, TextInput, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import { TextValidationPassword } from '../components/textValidationPassword';
 import { InputRegister } from '../components/inputRegister';
+import { useValidatorRegister } from '../hooks/useValidatorRegister';
 
 
 export const RegistryScreen = () => {
 
-  const [ emailFlag, setEmailFlag ] = useState(false);
-  const [ emailFlagData, setEmailFlagData ] = useState('');
+  const { passwordText,setPasswordText,newPasswordText,setNewPasswordText,requirementsObject,CheckStatusRequirements, 
+          ControlRequirementsStatus,requirementsStatus,statusColorPassword,statusColorEmail,setNewEmailText,setEmailText, setNameText, nameText} = useValidatorRegister();
 
-  const [ passwordFlag, setPasswordFlag ] = useState('');
-  const [ newPasswordFlag, setNewPasswordFlag ] = useState('');
-  const [ flagObject, setFlagObject ] = useState({
-    uppercase: false,
-    lowercase: false,
-    caracter: false,
-    length: false,
-    number: false,
-    samePass: false,
-  });
-  const [ allTrue, setAllTrue ] = useState(false)
+  useEffect(() => { CheckStatusRequirements(); }, [ newPasswordText, passwordText ]);
+  useEffect(() => { ControlRequirementsStatus(); }, [ requirementsObject ]);
 
-  const CheckCondition = () => {
-    flagObject.uppercase = (/[A-Z]/).test(passwordFlag);
-    flagObject.lowercase = (/[a-z]/).test(passwordFlag);
-    flagObject.caracter = (/[!@#$%^&*]/).test(passwordFlag); 
-    flagObject.length = (/^.{4,12}$/).test(passwordFlag);
-    flagObject.number = (/[0-9]/).test(passwordFlag);
-    (newPasswordFlag === passwordFlag) ? setFlagObject({...flagObject, samePass: true}) : setFlagObject({...flagObject, samePass: false});
-  };
+  let disabledButtonSend = (!requirementsStatus || nameText === '' || statusColorEmail !== 'green') ? true : false;
 
-  const ControlAllTrue = () => {
-    const booleanArray = [];
-
-    for(const key in flagObject){
-      booleanArray.push(flagObject[key])
-    }
-    let controlAllTrue = booleanArray.every((item) => item === true);
-    setAllTrue(controlAllTrue)
-  };
-
-  useEffect(() => { CheckCondition(); }, [newPasswordFlag, passwordFlag]);
-  useEffect(() => { ControlAllTrue(); }, [flagObject]);
-  console.log('allTrue', allTrue)
-
-  
   return (
     <SafeAreaView style={{ marginTop: 100}}>
       <View style={{ margin: 20}}>
         <Text style={{ color: 'black'}}>RegistryScreen</Text>
 
-        <InputRegister campoTexto="Nombre/s" tipoDeInput={<TextInput style={ styles.input } />}/>
+        <InputRegister 
+          campoTexto="Nombre" 
+          style={ styles.input }   
+          autoComplete="name"
+          autoFocus={true}
+          onChangeText={ name => setNameText(name)}
+        />
 
-        <InputRegister campoTexto="Apellido/s" tipoDeInput={<TextInput style={ styles.input } />}/>
-
-        <InputRegister campoTexto="Email" tipoDeInput={<TextInput style={ styles.input } />}/>
+        <InputRegister 
+          campoTexto="Email" 
+          style={ styles.input }             
+          autoComplete='email' 
+          keyboardType='email-address'
+          autoCapitalize="none"
+          onChangeText={ email => setEmailText(email)}
+        />
 
         <InputRegister 
           campoTexto="Repetir Email" 
-          tipoDeInput={<TextInput 
-            style={ styles.input } 
-            onChangeText={(item) => CheckEmail(item)}
-            autoComplete='off' 
-            keyboardType='email-address'/>}
+          style={{ ...styles.input, borderColor: statusColorEmail }} 
+          autoComplete='off' 
+          keyboardType='email-address'
+          autoCapitalize="none"
+          onChangeText={ email => setNewEmailText(email)}
         />
         
-        <InputRegister campoTexto="Contraseña" tipoDeInput={<TextInput style={{ ...styles.input, borderColor: allTrue ? 'green' : 'red' }} onChangeText={(text) => {setPasswordFlag(text), CheckCondition()}}/>}/>
+        <InputRegister 
+          campoTexto="Contraseña" 
+          style={styles.input} 
+          onChangeText={ text => { setPasswordText(text) }} 
+          secureTextEntry={true}
+        />
 
-        <InputRegister campoTexto="Repetir Contraseña" tipoDeInput={<TextInput style={{ ...styles.input, borderColor: allTrue ? 'green' : 'red' }} onChangeText={ (text) =>{setNewPasswordFlag(text)}} />}/>
+        <InputRegister 
+          campoTexto="Repetir Contraseña" 
+          style={{ ...styles.input, borderColor: statusColorPassword }} 
+          onChangeText={ text =>{ setNewPasswordText(text) }} 
+          secureTextEntry={true}
+          autoCapitalize="none"
+        />
         
         <View style={ styles.containerInputs }>
-          <TextValidationPassword Texto="Letra mayúscula" icono={flagObject.uppercase} />
-          <TextValidationPassword Texto="Letra mínuscula" icono={flagObject.lowercase}/>
-          <TextValidationPassword Texto="Simbolo" icono={flagObject.caracter}/>
-          <TextValidationPassword Texto="Número" icono={flagObject.length}/>
-          <TextValidationPassword Texto="Ocho carácteres" icono={flagObject.number}/>
-          <TextValidationPassword Texto="Coinciden" icono={flagObject.samePass}/>
+          <TextValidationPassword Texto="Letra mayúscula" icono={requirementsObject.uppercase} />
+          <TextValidationPassword Texto="Letra mínuscula" icono={requirementsObject.lowercase}/>
+          <TextValidationPassword Texto="Simbolo" icono={requirementsObject.caracter}/>
+          <TextValidationPassword Texto="Longitud 8 a 12" icono={requirementsObject.length}/>
+          <TextValidationPassword Texto="Número" icono={requirementsObject.number}/>
+          <TextValidationPassword Texto="Coinciden" icono={requirementsObject.samePass}/>
+        </View>
+
+        <View style={ styles.buttonContainer }>
+          <TouchableOpacity disabled={ disabledButtonSend }>
+            <View style={{...styles.boxButton, backgroundColor: disabledButtonSend ? 'grey' : '#004b67'}}>
+              <Text style={{ color: 'white', fontWeight: 'bold'}}>Registrarme</Text>
+            </View>
+          </TouchableOpacity>
         </View>
 
       </View>
@@ -99,5 +99,30 @@ const styles = StyleSheet.create({
     display: 'flex', 
     flexWrap: 'wrap', 
     flexDirection: 'row'
+  },    
+  boxButton: {
+    backgroundColor: '#00b6d3', 
+    display: 'flex', 
+    justifyContent: 'center', 
+    width: 240, 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    height: 45, 
+    borderRadius: 20,
+    marginVertical: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+        width: 0,
+        height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 2,
+  },
+  buttonContainer: {
+    display: 'flex', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    marginTop: 20
   }
 })

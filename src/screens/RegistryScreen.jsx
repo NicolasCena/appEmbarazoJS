@@ -18,7 +18,8 @@ export const RegistryScreen = () => {
     length: false,
     number: false,
     samePass: false,
-  })
+  });
+  const [ allTrue, setAllTrue ] = useState(false)
 
   const CheckCondition = () => {
     flagObject.uppercase = (/[A-Z]/).test(passwordFlag);
@@ -29,13 +30,20 @@ export const RegistryScreen = () => {
     (newPasswordFlag === passwordFlag) ? setFlagObject({...flagObject, samePass: true}) : setFlagObject({...flagObject, samePass: false});
   };
 
-  useEffect(() => {
+  const ControlAllTrue = () => {
+    const booleanArray = [];
 
-    // We reread the function when any state is updated
-    CheckCondition();
+    for(const key in flagObject){
+      booleanArray.push(flagObject[key])
+    }
+    let controlAllTrue = booleanArray.every((item) => item === true);
+    setAllTrue(controlAllTrue)
+  };
 
-  }, [newPasswordFlag, passwordFlag])
-  
+  useEffect(() => { CheckCondition(); }, [newPasswordFlag, passwordFlag]);
+  useEffect(() => { ControlAllTrue(); }, [flagObject]);
+  console.log('allTrue', allTrue)
+
   
   return (
     <SafeAreaView style={{ marginTop: 100}}>
@@ -57,12 +65,12 @@ export const RegistryScreen = () => {
             keyboardType='email-address'/>}
         />
         
-        <InputRegister campoTexto="Contraseña" tipoDeInput={<TextInput style={ styles.input } onChangeText={(text) => {setPasswordFlag(text), CheckCondition()}}/>}/>
+        <InputRegister campoTexto="Contraseña" tipoDeInput={<TextInput style={{ ...styles.input, borderColor: allTrue ? 'green' : 'red' }} onChangeText={(text) => {setPasswordFlag(text), CheckCondition()}}/>}/>
 
-        <InputRegister campoTexto="Repetir Contraseña" tipoDeInput={<TextInput style={{ ...styles.input }} onChangeText={ (text) =>{setNewPasswordFlag(text)}} />}/>
+        <InputRegister campoTexto="Repetir Contraseña" tipoDeInput={<TextInput style={{ ...styles.input, borderColor: allTrue ? 'green' : 'red' }} onChangeText={ (text) =>{setNewPasswordFlag(text)}} />}/>
         
         <View style={ styles.containerInputs }>
-          <TextValidationPassword Texto="Letra mayúscula" icono={flagObject.uppercase}/>
+          <TextValidationPassword Texto="Letra mayúscula" icono={flagObject.uppercase} />
           <TextValidationPassword Texto="Letra mínuscula" icono={flagObject.lowercase}/>
           <TextValidationPassword Texto="Simbolo" icono={flagObject.caracter}/>
           <TextValidationPassword Texto="Número" icono={flagObject.length}/>
@@ -80,7 +88,6 @@ const styles = StyleSheet.create({
   input: {
     height: 40,
     borderWidth: 1,
-    borderColor: 'black',
     borderRadius: 4,
     padding: 5,
     position: 'relative',

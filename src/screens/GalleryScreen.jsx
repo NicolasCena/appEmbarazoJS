@@ -9,7 +9,6 @@ export const GalleryScreen = () => {
 
   // Seteo de variables y estados
   let hola = useRef()
-  console.log('HOLA', hola.current)
   let weekActual = 5;
   let arrayWeeks = [];
   const [ actualIndex, setActualIndex] = useState(weekActual-1)

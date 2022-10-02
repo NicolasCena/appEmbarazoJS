@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, Dimensions, StyleSheet } from 'react-native'
-import Carousel from 'react-native-snap-carousel';
+import { View, Text, Dimensions, StyleSheet, TouchableOpacity } from 'react-native'
+import Carousel from 'react-native-reanimated-carousel';
 import { dataImagesGallery } from '../data/dataImagesGallery';
 import { GalleryWeek } from '../components/galleryWeek';
 
@@ -8,11 +8,10 @@ import { GalleryWeek } from '../components/galleryWeek';
 export const GalleryScreen = () => {
 
   // Seteo de variables y estados
-  let hola = useRef()
-  console.log('HOLA', hola.current)
+  const r = useRef(null);
   let weekActual = 5;
   let arrayWeeks = [];
-  const [ actualIndex, setActualIndex] = useState(weekActual-1)
+  const [ actualIndex, setActualIndex] = useState(0)
   const [ gallerySelect, setGallerySelect ] = useState(dataImagesGallery[weekActual-1])
 
   //Generamos un array con numeros para crear el carousel de numeros
@@ -26,19 +25,15 @@ export const GalleryScreen = () => {
     setGallerySelect(dataImagesGallery[weekSelectioned]);
   }
 
-  const { width } = Dimensions.get('window');
-  const uri = 'https://enfamilia.aeped.es/sites/enfamilia.aeped.es/files/images/articulos/parto.shutterstock_85327459.jpg';
-  const dataGallery = dataImagesGallery;
-
   // Seteo de estilos para el carousel
-  
+  useEffect(() => {},[])
 
   return (
     <View>
       <Text>GalleryScreen</Text>
 
       <View style={{ height: 80 }}>
-          <Carousel 
+          {/* <Carousel 
               ref={hola}
               data={ arrayWeeks }
               renderItem={ (item) => 
@@ -56,7 +51,30 @@ export const GalleryScreen = () => {
               slideStyle={style.slideStyle}
               firstItem={weekActual-1}
               lockScrollWhileSnapping={true}
-          /> 
+          />  */}
+          <Carousel
+                loop={false}
+                snapEnabled={true}
+                width={70}
+                height={30}
+                defaultIndex={0}
+                style={{
+                  width: '100%',
+                  height: 45,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  paddingHorizontal: 20
+              }}
+                data={arrayWeeks}
+                scrollAnimationDuration={1000}
+                onSnapToItem={index => setActualIndex(index)}
+                onScrollEnd={index => updateGallery(index)}
+                renderItem={ (item) => 
+                  <TouchableOpacity onPress={() => console.log(item.item)}>
+                    <Text style={[style.carouselitem, (actualIndex+1 == item.item) ? style.activeItem : style.inactiveItem]} >{item.item}</Text>
+                  </TouchableOpacity>
+              }
+            />
       </View>
 
       <View>

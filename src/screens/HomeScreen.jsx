@@ -2,9 +2,13 @@ import React from 'react'
 import { View, StyleSheet, ScrollView, useWindowDimensions } from 'react-native'
 import { BoxSection } from '../components/boxSection';
 import { dataSection } from '../data/dataSections';
+import { useSelector, useDispatch } from 'react-redux'
+import { decrement, increment } from '../features/counter/counterSlice';
 
 export const HomeScreen = () => {
-
+  const count = useSelector((state) => state);
+  const dispatch = useDispatch();
+  console.log(count)
   const windows = useWindowDimensions();
 
   return (

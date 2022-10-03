@@ -16,7 +16,6 @@ const Drawer = createDrawerNavigator();
 
 export const DrawerNavigation = () => {
 
-  const isLogin = false;
 
   return (
     <Drawer.Navigator 

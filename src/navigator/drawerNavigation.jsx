@@ -5,7 +5,7 @@ import { SettingScreen } from '../screens/SettingScreen';
 import { MyDiaryScreen } from '../screens/MyDiaryScreen';
 import { GalleryScreen } from '../screens/GalleryScreen';
 import { RecomendationScreen } from '../screens/RecomendationScreen';
-import { MeditationScreen } from '../screens/MeditationScreen';
+// import { MeditationScreen } from '../screens/MeditationScreen';
 import { LoginScreen } from '../screens/LoginScreen';
 import { WelcomeUserScreen } from '../screens/WelcomeUserScreen';
 
@@ -16,7 +16,6 @@ const Drawer = createDrawerNavigator();
 
 export const DrawerNavigation = () => {
 
-  const isLogin = false;
 
   return (
     <Drawer.Navigator 
@@ -40,7 +39,7 @@ export const DrawerNavigation = () => {
       <Drawer.Screen name="MyDiaryScreen" component={MyDiaryScreen} />
       <Drawer.Screen name="GalleryScreen" component={GalleryScreen} />
       <Drawer.Screen name="RecomendationScreen" component={RecomendationScreen} />
-      <Drawer.Screen name="MeditationScreen" component={MeditationScreen} />
+      {/* <Drawer.Screen name="MeditationScreen" component={MeditationScreen} /> */}
     </Drawer.Navigator>
   );
 }

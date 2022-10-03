@@ -1,10 +1,14 @@
-import React from 'react'
-import { View, StyleSheet, ScrollView, useWindowDimensions } from 'react-native'
+import React from 'react';
+import { View, StyleSheet, ScrollView, useWindowDimensions } from 'react-native';
 import { BoxSection } from '../components/boxSection';
 import { dataSection } from '../data/dataSections';
+import { useSelector, useDispatch } from 'react-redux'
+import { changeStatusLogin, changeDarkMode, language } from '../context/preferencesUserSlice';
 
 export const HomeScreen = () => {
-
+  const { darkMode, isLogin, language } = useSelector((state) => state.preferencesUser);
+  const dispatch = useDispatch();
+  console.log(darkMode, isLogin, language)
   const windows = useWindowDimensions();
 
   return (
